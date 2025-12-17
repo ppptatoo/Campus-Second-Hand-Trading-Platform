@@ -88,7 +88,7 @@
                         </div>
                         <div class="list-main clearfix">
                             <a href="#" class="goods-images fl">
-                                <img src="<%=basePath%>assets/web/${item.images[0].imgUrl}" />
+                                <img src="<%=basePath%>files/web/${item.images[0].imgUrl}" />
                             </a>
                             <div class="good-info fl">
                                 <p href="#" class="goods-title"><c:out value="${item.goods.name}"></c:out></p>

@@ -77,7 +77,7 @@
                 <div id="MagnifierWrap2" class="fl">
                     <div class="MagnifierMain">
 
-                        <img class="MagTargetImg" src="<%=basePath%>assets/web/${goodsExtend.images[0].imgUrl}">
+                        <img class="MagTargetImg" src="<%=basePath%>files/web/${goodsExtend.images[0].imgUrl}">
 
                     </div>
                         <span class="spe_leftBtn">&lt;</span>
@@ -91,7 +91,7 @@
                         <ul>
                             <c:forEach var="item" items="${goodsExtend.images}">
                                 <li class="">
-                                    <img src="<%=basePath%>assets/web/${item.imgUrl}" />
+                                    <img src="<%=basePath%>files/web/${item.imgUrl}" />
                                 </li>
                             </c:forEach>
                         </ul>
@@ -189,7 +189,7 @@
                     <c:forEach var="item" items="${commend}">
                         <li>
                             <a href="<%=basePath%>detail/detail/${item.goods.id}" class="sidebar clearfix">
-                                <img class="sidebar-image fl" src="<%=basePath%>assets/web/${item.images[0].imgUrl}" alt="<c:out value="${item.goods.name}"></c:out>">
+                                <img class="sidebar-image fl" src="<%=basePath%>files/web/${item.images[0].imgUrl}" alt="<c:out value="${item.goods.name}"></c:out>">
                                 <p class="sidebar-title"><c:out value="${item.goods.name}"></c:out></p>
                                 <p class="sidebar-price">￥<c:out value="${item.goods.price}"></c:out></p>
                             </a>

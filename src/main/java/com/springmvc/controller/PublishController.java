@@ -89,8 +89,8 @@ public class PublishController {
         //获取上传文件的原名
         String oldFileName = fileName.getOriginalFilename();
 
-        //存储图片的物理路径（部署 ROOT/images/web 下，通过 /assets/web/* 对外访问，避免与 Tomcat 默认 /images 冲突）
-        File uploadFile = new File(request.getServletContext().getRealPath("/images/web/"));
+        // 存储图片的物理路径：使用持久化目录 /data/uploads/web
+        File uploadFile = new File("/data/uploads/web/");
 
         if(!uploadFile.exists()){
             uploadFile.mkdirs();

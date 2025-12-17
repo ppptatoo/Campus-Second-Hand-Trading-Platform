@@ -586,11 +586,22 @@ public class UserController {
         Map<String,Object> map = new HashMap<String, Object>();
         if(sessionUser!=null){
             try{
-                String url = user.getImgUrl();
-                //图片名称
-                String newUrl = url.substring(url.lastIndexOf("/")+1);
-                user.setImgUrl(newUrl);
                 user.setId(sessionUser.getId());
+                
+                // 处理头像URL：如果前端发送完整URL，则提取文件名；如果是文件名则保持不变
+                String imgUrl = user.getImgUrl();
+                if(imgUrl != null && !imgUrl.trim().isEmpty()) {
+                    if(imgUrl.contains("/")) {
+                        // 完整URL，提取文件名
+                        String newUrl = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+                        user.setImgUrl(newUrl);
+                    }
+                    // 否则保持文件名不变
+                } else {
+                    // 如果没有提交新头像，保持原有头像
+                    user.setImgUrl(sessionUser.getImgUrl());
+                }
+                
                 userService.updateByPrimaryKeySelective(user);
                 User cur_user = userService.selectByPrimaryKey(sessionUser.getId());
                 //更新用户登录信息
@@ -599,6 +610,7 @@ public class UserController {
                 map.put("success",true);
                 map.put("msg","修改成功");
             }catch (Exception e) {
+                e.printStackTrace();
                 map.put("success", false);
                 map.put("msg", "系统繁忙，稍后再试");
                 return map;

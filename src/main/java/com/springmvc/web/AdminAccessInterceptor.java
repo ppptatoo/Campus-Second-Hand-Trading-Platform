@@ -1,5 +1,6 @@
 package com.springmvc.web;
 
+import com.springmvc.pojo.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,12 +17,23 @@ public class AdminAccessInterceptor implements HandlerInterceptor {
 
         HttpSession session
                 = request.getSession();
-        if (session.getAttribute("admin") == null) {
+        Object adminObj = session.getAttribute("admin");
+        if (adminObj == null) {
             //发起重定向
             String path="/admin/toLogin";
             response.sendRedirect(path);
             return false;//返回false不再执行后续的控制器
         }
+        
+        // 额外检查：确保 admin 对象确实拥有管理员权限（power > 50）
+        User admin = (User) adminObj;
+        if (admin.getPower() == null || admin.getPower() <= 50) {
+            // 权限不足
+            String path="/admin/toLogin";
+            response.sendRedirect(path);
+            return false;
+        }
+        
         return true;
     }
 

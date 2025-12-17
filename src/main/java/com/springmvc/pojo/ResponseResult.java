@@ -3,10 +3,10 @@ package com.springmvc.pojo;
 import java.io.Serializable;
 
 public class ResponseResult<T> implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2744760061380493062L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2744760061380493062L;
 	private Integer state;
 	private String message;
 	private T data;

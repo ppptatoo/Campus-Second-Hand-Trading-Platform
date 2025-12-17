@@ -1,133 +1,91 @@
 # 科大二手工坊
 
-## 🎉🎉 SpringBoot快速启动版 [科大二手工坊V3（点我直达→）](https://github.com/lvr1997/kd-shop-fast) 
+基于 Spring MVC + Spring + MyBatis 的校园二手物品交易平台（前台 + 后台）。当前分支正在升级到 Java 21 与 Spring Framework 6，以适配 Jakarta API 与最新 LTS 运行环境。
 
-## 项目介绍
+> 配置讲解视频： [科大二手工坊项目配置教程（B站）](https://b23.tv/RPuICwZ)
 
-基于SSM的校园二手物品交易平台（项目包括前台和后台）
+## 快速索引
+- [项目概览](#项目概览)
+- [技术栈与要求](#技术栈与要求)
+- [快速开始（本地）](#快速开始本地)
+- [账号信息](#账号信息)
+- [常见问题](#常见问题)
+- [功能列表](#功能列表)
+- [更新记录](#更新记录)
 
-**‼️‼️在此说一下，用这个项目做毕设的同学注意了‼️只要有一点SSM基础跑起来是绝对没问题的。0基础的小白最好先补充一点基础知识再来。觉得有用的可以点个star，觉得没有用的就划过。作者在本地项目运行是没问题的。新导入的项目如果跑不起来请移步我的B站，有讲解视频。👉[【科大二手工坊项目配置教程-哔哩哔哩】](https://b23.tv/RPuICwZ)下方原有的QQ群入口已经关闭**
+## 项目概览
+- 二手物品列表/搜索/分类浏览
+- 商品发布、图片上传、留言与收藏
+- 订单流转与模拟支付
+- 地址管理与个人中心
+- 后台：商品、分类、订单、举报/轮播等管理
 
-## Q&A
+## 技术栈与要求
+- Java 21（LTS）
+- Spring Framework 6.x（Jakarta 命名空间）
+- MyBatis 3.x
+- MySQL 5.7+/8.0+
+- Maven 3.9+
+- Servlet 6 / Tomcat 10.1+（推荐，Jakarta API）
 
-- 项目有没有毕业论文？ 答：原先有，这里说明下不再提供了，因为提供的多了，对你们也不好，毕竟论文到最后都是要经过查重的。
-- 项目跑不起来？答：新导入的项目使用idea打开，resources目录可能颜色不太对，要右键resources目录将它做成资源目录。（make direction with 选择 resources root）
-- 项目跑起来后没有数据？答：sql文件除用户表以外的表数据已经清空，只有表结构。添加闲置物品提示没有分类请登录后台，自行添加。
-- 对于关于上传的图片不显示的问题？答：经测试，项目代码是没有问题的，出问题的在于idea的配置问题。项目的输出目录要配置在tomcat的webapp内（不会的看上边的视频链接）
+## 快速开始（本地）
+1) 克隆代码并导入 IDEA（确保 Maven 自动导入）。
+2) 数据库：创建 `market` 库并导入 `src/main/resources/market.sql`。
+3) 配置 `src/main/resources/jdbc.properties`：更新 `username/password` 及 `url`（保持 `useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=UTC`）。
+4) 构建
+```bash
+mvn clean package
+```
+5) 运行（两种方式）
+   - IDEA 配置 Tomcat 10.1+，部署 `kd-second-hand-workshop:war exploded`，Context Path `/`，端口 `8088`
+   - 或将 `target/kd-second-hand-workshop.war` 放入 Tomcat `webapps/`，启动后访问
 
+访问地址：
+- 前台：`http://localhost:8088/goods/index`
+- 后台：`http://localhost:8088/admin/toLogin`
 
-### 首页截图
+## 便携包运行（课堂演示推荐）
+- 已添加 Maven Wrapper（锁 Maven 3.9.9）与 Jetty 插件；无需外部 Tomcat。
+- 可在根目录放置便携 JDK 到 `./jre/`（可选）。脚本会优先使用这里的 JDK，然后才用 `JAVA_HOME` 或系统 java。
+- 默认端口 8080，可通过环境变量 `PORT` 覆盖。
 
-![image.png](https://s2.loli.net/2021/12/18/pT2a8w1PgmKlQUk.png)
+使用：
+- macOS/Linux：
+   ```bash
+   chmod +x run.sh
+   PORT=8080 ./run.sh   # 若不设 PORT 默认为 8080
+   ```
+- Windows：双击 `run.bat`，或在 CMD 里执行：
+   ```bat
+   set PORT=8080 && run.bat
+   ```
 
-### 后台截图
+启动后访问：
+- 前台：`http://localhost:8080/goods/index`
+- 后台：`http://localhost:8080/admin/toLogin`
 
-![image.png](https://s2.loli.net/2021/12/18/aehXmsMySWorbZI.png)
+## 账号信息
+- 学生：`15232103749 / 123456`
+- 管理员：`17611006666 / aaa`
 
-## 运行环境
+## 常见问题
+- **启动 404**：确认访问路径 `/goods/index`，检查 web.xml 映射和 Tomcat 端口。
+- **数据库连接失败**：核对 `jdbc.properties`，确认 MySQL 运行且 `market` 已导入。
+- **图片不显示/上传失败**：确保上传目录具备写权限，使用 Tomcat 10.1+ 并保持 UTF-8 配置。
+- **Jakarta 兼容性**：确保使用 Tomcat 10.1+ 或兼容 Servlet 6 容器；旧版 Tomcat 8/9 的 `javax.*` API 不再适配。
 
-开发工具 IDEA
+## 功能列表
+前台：
+- 分类浏览、搜索、发布/管理闲置、留言、收藏
+- 订单创建/确认/模拟支付，个人中心，地址管理，收入/支出统计
 
-安装运行环境：
+后台：
+- 商品、分类、订单、举报、留言、轮播管理
 
-1. `jdk1.8` 
-2. `Tomact8`或`Tomcat8.5`
-3. `maven3.5`
-
-数据库：MySQL 
-
-
-## 项目说明
-
-**端口号暂时固定为8088，不要更改其它的tomact端口号**
-
-**不建议用Tomcat9哦！版本过高会出现不兼容的问题**
-
-访问网址：localhost:8088/goods/index
-
-学生用户登录 15232103749/123456
-
-管理页面登录：localhost:8088/admin/toLogin
-
-系统管理员用户登录  17611006666/aaa
-
-> 实在跑不起来的同学，这里贴一下作者本地的项目，下载即可!!  [度盘链接](https://pan.baidu.com/s/1klVY5BwlEeH1t05gvZ5dZA?pwd=myhc)，提取码：myhc
-
-## 更新日志
-
-2020.04.14 
-1. 项目部分调整，保证能启动
-2. 添加数据库`sql`文件，在`src/main/java/resources`目录下
-
-2020.12.09
-
-1. 更新pom依赖
-2. 添加git忽略文件
-
-2020.12.10
-
-1. 更新至Spring5.x版本 
-
-2020.12.11
-
-1. 修复项目启动访问页面报404问题
-2. 修改项目名 **kd-second-hand-workshop**
-
-2021.01.05
-
-1. 统一项目根路径
-
-2021.12.17
-
-1. 修复在Tomcat8.0及8.5运行环境下项目启动报404的问题
-
-2. 修复在个人中心查看自己购买的商品时，还可以购买自己的商品的bug
-
-2021.12.20
-
-1. 修复上传图片会存到target目录以及重新部署后，上传的图片丢失的问题的bug
-
-2. 修复用户累计收入收出功能漏洞
-
-3. 清空除用户表、地址表以外其他表添加的测试数据
-
-4. 解决上传头像后，部分页面不显示的问题、
-
-2022.02.21
-
-1. 解决上传头像后部分页面不显示的问题
-
-2. 解决确认订单后页面404的问题
-
-## 功能模块
-
-前台部分：
-- [x] 首页
-    - [x] 分类展示
-    - [x] 闲置检索
-    - [x] 发布闲置
-- [x] 学生用户登录
-    - [x] 找回密码
-    - [x] 注册
-- [x] 发布/想要
-    - [x] 管理我发布的闲置
-    - [x] 管理我想要的闲置    
-- [x] 用户留言（收到的留言，发布的留言）
-- [x] 个人信息管理
-- [x] 订单管理
-- [x] 意见反馈
-- [x] 累计收入，累计支出
-- [x] 模拟支付
-- [x] 收货地址管理
-- [x] 闲置收藏
-
-后台管理系统部分：
-
-- [x] 首页轮播图管理
-- [x] 闲置管理
-- [x] 分类管理
-- [x] 举报管理
-- [x] 留言管理
-- [x] 订单管理
-
-****
+## 更新记录（节选）
+- 2025-12：开始升级到 Java 21 / Spring 6，适配 Jakarta API 与新运行环境。
+- 2022-02：修复头像显示与订单确认 404 问题。
+- 2021-12：修复上传路径与累计收入问题，清理测试数据。
+- 2021-01：统一项目根路径。
+- 2020-12：升级到 Spring 5.x，补充 gitignore。
+- 2020-04：补充 SQL 文件，保障可启动。

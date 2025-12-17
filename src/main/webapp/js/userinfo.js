@@ -118,8 +118,7 @@ $(function(){
 
 			var data = {
 				username: $('.nick-name').val(),
-				imgUrl: $('.user-info-picture').attr('src'),
-				signature: $('.signature').val(),
+			imgUrl: $('.user-info-picture').attr('src').substring($('.user-info-picture').attr('src').lastIndexOf('/')+1),
 				// real_name: $('.real-name').val(),
 				// email: $('.email').val(),
 				sex: $('input[name=sex]:checked').val(),

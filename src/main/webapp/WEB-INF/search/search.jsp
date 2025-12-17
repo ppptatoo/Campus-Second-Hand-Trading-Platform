@@ -70,7 +70,7 @@
         <c:forEach var="item" items="${goodsExtendList}">
             <li>
                 <a href="<%=basePath%>detail/detail/${item.goods.id}" class="good-image" target="_blank">
-                    <img src="<%=basePath%>assets/web/${item.images[0].imgUrl}" alt="<c:out value="${item.goods.name}"></c:out>">
+                    <img src="<%=basePath%>files/web/${item.images[0].imgUrl}" alt="<c:out value="${item.goods.name}"></c:out>">
                 </a>
                 <a href="<%=basePath%>detail/detail/${item.goods.id}" class="good-title" target="_blank"><c:out value="${item.goods.name}"></c:out></a>
                 <span class="good-price"><c:out value="${item.goods.price}"></c:out></span>

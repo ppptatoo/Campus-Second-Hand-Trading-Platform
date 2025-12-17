@@ -137,7 +137,7 @@
   <!--更新用户信息-->
   <update id="updateByPrimaryKeySelective" parameterType="com.springmvc.pojo.User">
     UPDATE
-      USER
+      user
     <set>
       <if test="phone != null">
         phone = #{phone,jdbcType=CHAR},
@@ -190,7 +190,7 @@
     SELECT
      COUNT(*)
     FROM
-     USER
+     user
     WHERE
       phone=#{phone}
   </select>

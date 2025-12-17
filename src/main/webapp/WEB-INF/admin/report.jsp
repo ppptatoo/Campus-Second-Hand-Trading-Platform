@@ -79,7 +79,7 @@
                 </td>
                 <td align="center">
                     <c:forEach var="image" items="${item.images}">
-                        <img src="<%=basePath%>assets/web/${image.imgUrl}" width="100" alt="${item.goods.name}">
+                        <img src="<%=basePath%>files/web/${image.imgUrl}" width="100" alt="${item.goods.name}">
                     </c:forEach>
 
                 </td>

@@ -19,12 +19,17 @@
     <!--    1.配置要扫描的包    -->
     <context:component-scan base-package="com.springmvc"/>
     <mvc:annotation-driven/>
+    <!-- 让 Tomcat 的 DefaultServlet 处理未显式映射的静态资源 -->
+    <mvc:default-servlet-handler/>
+    <!-- 直接映射持久化图片目录，绕过 Tomcat 对符号链接的限制 -->
+    <mvc:resources mapping="/images/web/**" location="file:/data/uploads/web/" />
+    <mvc:resources mapping="/uploads/web/**" location="file:/data/uploads/web/" />
+    <mvc:resources mapping="/files/web/**" location="file:/data/uploads/web/" />
     <!--2.静态资源访问-->
+    <!-- 通过 webapps/ROOT/images/** 提供静态资源，/images/web 由容器中的符号链接指向 /data/uploads/web -->
     <mvc:resources location="/js/"  mapping="/js/**" />
     <mvc:resources location="/css/"  mapping="/css/**" />
-    <mvc:resources location="/images/"  mapping="/images/**" />
-    <!-- 避免与 Tomcat 自带 /images 应用冲突，新增 /assets/** 访问入口指向同一物理目录 -->
-    <mvc:resources location="/images/"  mapping="/assets/**" />
+    <!-- 移除 /images/** 静态映射，避免与 /images/web/* 控制器冲突 -->
 
     <!--3.配置jsp视图解析器-->
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">

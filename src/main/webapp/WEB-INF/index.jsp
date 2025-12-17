@@ -43,7 +43,7 @@
                                     <img src="<%=basePath%>images/user/${cur_user.imgUrl}" class="user-header-image">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="<%=basePath%>assets/web/user/auth_alert_bg.png" class="user-header-image">
+                                    <img src="<%=basePath%>images/web/user/auth_alert_bg.png" class="user-header-image">
                                 </c:otherwise>
                             </c:choose>
                             ${cur_user.username}</a>
@@ -93,8 +93,8 @@
                             <c:forEach var="item" items="${Goods1}">
                                 <li>
                                     <a href="<%=basePath%>detail/detail/${item.goods.id}" target="_blank" class="good-image">
-                                        <img class="image-show-box" src="<%=basePath%>assets/web/${item.images[0].imgUrl}" />
-                                        <img class="image-real-box" src="<%=basePath%>assets/web/${item.images[0].imgUrl}" />
+                                        <img class="image-show-box" src="<%=basePath%>files/web/${item.images[0].imgUrl}" />
+                                        <img class="image-real-box" src="<%=basePath%>files/web/${item.images[0].imgUrl}" />
                                     </a>
                                     <a href="<%=basePath%>detail/detail/${item.goods.id}" target="_blank" class="good-title">
                                         <c:out value="${item.goods.name}"></c:out>
