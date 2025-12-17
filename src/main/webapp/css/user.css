@@ -489,7 +489,7 @@ p.msg {
 }
 
 .layui-layer.auth-layer {
-    background-image: url(../assets/web/user/auth_alert_bg.png);
+    background-image: url(../images/web/user/auth_alert_bg.png);
     background-color: transparent;
     box-shadow: none;
 }

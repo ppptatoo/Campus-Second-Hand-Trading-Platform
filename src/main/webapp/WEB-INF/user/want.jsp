@@ -78,7 +78,7 @@
                         <span>时间：${item.wanted.createAt}</span>
                     </div>
                         <div class="list-main clearfix">
-                            <a href="" class="goods-images fl"><img src="<%=basePath%>assets/web/${item.goodsExtend.images[0].imgUrl}"></a>
+                            <a href="" class="goods-images fl"><img src="<%=basePath%>files/web/${item.goodsExtend.images[0].imgUrl}"></a>
                             <div class="good-info fl">
                                 <a href="<%=basePath%>detail/detail/${item.goodsExtend.goods.id}" class="goods-title"><c:out value="${item.goodsExtend.goods.name}"></c:out></a>
                                 <p class="goods-price">￥<span><c:out value="${item.goodsExtend.goods.price}"></c:out></span></p>

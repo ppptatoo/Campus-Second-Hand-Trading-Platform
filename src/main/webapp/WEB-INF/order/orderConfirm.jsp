@@ -115,7 +115,7 @@
                 </ul>
                 <ul class="item_detail">
                     <li class="p_info">
-                        <b><img style="width: 75px;height: 75px" src="<%=basePath%>assets/web/${image[0].imgUrl}"/></b>
+                        <b><img style="width: 75px;height: 75px" src="<%=basePath%>files/web/${image[0].imgUrl}"/></b>
 
                         <b class="product_name lf">
                             ${good.name}

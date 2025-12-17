@@ -1,0 +1,5 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: com.lulinran.upgrade
+recipeList:
+  - org.openrewrite.java.spring.framework.UpgradeSpringFramework_6_0
+  - org.openrewrite.java.migrate.UpgradeToJava21

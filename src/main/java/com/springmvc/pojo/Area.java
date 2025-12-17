@@ -3,8 +3,8 @@ package com.springmvc.pojo;
 import java.io.Serializable;
 
 public class Area implements Serializable{
-	
-	private static final long serialVersionUID = -909376560285531695L;
+
+    private static final long serialVersionUID = -909376560285531695L;
 	private Integer id;
 	private String cityCode;
 	private String areaCode;

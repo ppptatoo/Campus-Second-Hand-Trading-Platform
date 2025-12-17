@@ -1,85 +1,91 @@
-# 校园二手交易平台（XYETP）
+# 科大二手工坊
 
-面向校园场景的二手交易网站，基于 Spring MVC + MyBatis + MySQL，打包为 WAR 部署到 Tomcat。支持用户注册登录、发布/浏览商品、下单确认、地址管理以及后台管理。
+基于 Spring MVC + Spring + MyBatis 的校园二手物品交易平台（前台 + 后台）。当前分支正在升级到 Java 21 与 Spring Framework 6，以适配 Jakarta API 与最新 LTS 运行环境。
 
-## 功能概览
-- 前台
-  - 用户注册/登录、找回密码、头像上传
-  - 商品发布（含多图上传）、分类浏览、搜索、详情
-  - 下单与订单确认、收货地址管理
-- 后台
-  - 管理员登录
-  - 商品上/下架、删除
-  - 分类管理（含默认“其他”）
-  - 订单、举报查看（可按需简化）
-- UI
-  - 首页 4 列商品卡片布局，蓝色清爽风格
-  - 轮播已移除，直接突出“最新上架”
+> 配置讲解视频： [科大二手工坊项目配置教程（B站）](https://b23.tv/RPuICwZ)
 
-## 技术栈
-- Java 8+，Spring MVC，MyBatis
-- MySQL 5.7+/8.0
-- 前端：JSP + jQuery + Layui
-- 构建：Maven，打包 WAR 部署 Tomcat 9（8088）
+## 快速索引
+- [项目概览](#项目概览)
+- [技术栈与要求](#技术栈与要求)
+- [快速开始（本地）](#快速开始本地)
+- [账号信息](#账号信息)
+- [常见问题](#常见问题)
+- [功能列表](#功能列表)
+- [更新记录](#更新记录)
 
-## 环境要求
-- JDK 1.8+
-- Maven 3.5+
-- MySQL 5.7+（本地 root 无密码可直接用，若有密码需改配置）
-- Tomcat 9（示例使用 Homebrew 安装，端口 8088）
+## 项目概览
+- 二手物品列表/搜索/分类浏览
+- 商品发布、图片上传、留言与收藏
+- 订单流转与模拟支付
+- 地址管理与个人中心
+- 后台：商品、分类、订单、举报/轮播等管理
 
-## 快速开始（本地 Mac，Homebrew Tomcat@9）
-1) 编译打包  
+## 技术栈与要求
+- Java 21（LTS）
+- Spring Framework 6.x（Jakarta 命名空间）
+- MyBatis 3.x
+- MySQL 5.7+/8.0+
+- Maven 3.9+
+- Servlet 6 / Tomcat 10.1+（推荐，Jakarta API）
+
+## 快速开始（本地）
+1) 克隆代码并导入 IDEA（确保 Maven 自动导入）。
+2) 数据库：创建 `market` 库并导入 `src/main/resources/market.sql`。
+3) 配置 `src/main/resources/jdbc.properties`：更新 `username/password` 及 `url`（保持 `useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=UTC`）。
+4) 构建
+```bash
+mvn clean package
+```
+5) 运行（两种方式）
+   - IDEA 配置 Tomcat 10.1+，部署 `kd-second-hand-workshop:war exploded`，Context Path `/`，端口 `8088`
+   - 或将 `target/kd-second-hand-workshop.war` 放入 Tomcat `webapps/`，启动后访问
+
+访问地址：
+- 前台：`http://localhost:8088/goods/index`
+- 后台：`http://localhost:8088/admin/toLogin`
+
+## 便携包运行（课堂演示推荐）
+- 已添加 Maven Wrapper（锁 Maven 3.9.9）与 Jetty 插件；无需外部 Tomcat。
+- 可在根目录放置便携 JDK 到 `./jre/`（可选）。脚本会优先使用这里的 JDK，然后才用 `JAVA_HOME` 或系统 java。
+- 默认端口 8080，可通过环境变量 `PORT` 覆盖。
+
+使用：
+- macOS/Linux：
    ```bash
-   mvn -DskipTests package
+   chmod +x run.sh
+   PORT=8080 ./run.sh   # 若不设 PORT 默认为 8080
    ```
-2) 停 Tomcat  
-   ```bash
-   /opt/homebrew/opt/tomcat@9/bin/catalina stop
+- Windows：双击 `run.bat`，或在 CMD 里执行：
+   ```bat
+   set PORT=8080 && run.bat
    ```
-3) 部署 WAR  
-   ```bash
-   cp target/kd-second-hand-workshop.war /opt/homebrew/opt/tomcat@9/libexec/webapps/ROOT.war
-   ```
-4) 清理旧解压目录（防旧文件干扰）  
-   ```bash
-   rm -rf /opt/homebrew/opt/tomcat@9/libexec/webapps/ROOT
-   ```
-5) 启动 Tomcat  
-   ```bash
-   /opt/homebrew/opt/tomcat@9/bin/catalina start
-   ```
-6) 访问首页  
-   http://localhost:8088/
 
-## 数据库配置
-- 配置文件：`src/main/resources/jdbc.properties`
-- 默认连接：`jdbc:mysql://localhost:3306/market`，用户 `root`，无密码  
-  如有密码，请修改 `username/password` 并重启 Tomcat。
-- 初始化 SQL：`src/main/resources/market.sql`
+启动后访问：
+- 前台：`http://localhost:8080/goods/index`
+- 后台：`http://localhost:8080/admin/toLogin`
 
-## 图片与静态资源
-- 图片存储：Tomcat 运行时目录 `/opt/homebrew/opt/tomcat@9/libexec/webapps/ROOT/images/web`
-- 访问路径：`http://localhost:8088/assets/web/<文件名>`（前后端统一）
-- 发布时上传的图片自动写入上述目录；手动放样例图可直接复制到该目录，数据库 `image.img_url` 只存文件名。
-
-## 默认分类
-- 发布页会自动初始化分类：数码电子、书籍教材、日用百货、运动出行、其他。
-- 若分类下拉为空，可在 `catelog` 表手动插入 `name='其他', status=1`。
+## 账号信息
+- 学生：`15232103749 / 123456`
+- 管理员：`17611006666 / aaa`
 
 ## 常见问题
-- 端口占用/停不掉：`lsof -nP -i tcp:8088` 查 PID，`kill <PID>` 后重启 Tomcat。
-- 图片 404：硬刷新；确认文件在 `webapps/ROOT/images/web`；数据库只存文件名；访问用 `/assets/web/文件名`。
-- 样式没更新：Ctrl/Cmd+Shift+R 清缓存；或重新部署 WAR 并删掉旧的 ROOT 目录。
-- MySQL 连接失败：检查 `jdbc.properties` 中的 URL/用户名/密码，改后重启。
+- **启动 404**：确认访问路径 `/goods/index`，检查 web.xml 映射和 Tomcat 端口。
+- **数据库连接失败**：核对 `jdbc.properties`，确认 MySQL 运行且 `market` 已导入。
+- **图片不显示/上传失败**：确保上传目录具备写权限，使用 Tomcat 10.1+ 并保持 UTF-8 配置。
+- **Jakarta 兼容性**：确保使用 Tomcat 10.1+ 或兼容 Servlet 6 容器；旧版 Tomcat 8/9 的 `javax.*` API 不再适配。
 
-## 部署到 GitHub（最简步骤）
-```bash
-git init
-git add .
-git commit -m "init: xyetp"
-git branch -M main
-git remote add origin https://github.com/<yourname>/<repo>.git
-git push -u origin main
-```
-若用 HTTPS，请使用 GitHub Personal Access Token 作为密码。
+## 功能列表
+前台：
+- 分类浏览、搜索、发布/管理闲置、留言、收藏
+- 订单创建/确认/模拟支付，个人中心，地址管理，收入/支出统计
+
+后台：
+- 商品、分类、订单、举报、留言、轮播管理
+
+## 更新记录（节选）
+- 2025-12：开始升级到 Java 21 / Spring 6，适配 Jakarta API 与新运行环境。
+- 2022-02：修复头像显示与订单确认 404 问题。
+- 2021-12：修复上传路径与累计收入问题，清理测试数据。
+- 2021-01：统一项目根路径。
+- 2020-12：升级到 Spring 5.x，补充 gitignore。
+- 2020-04：补充 SQL 文件，保障可启动。

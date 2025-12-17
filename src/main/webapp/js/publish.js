@@ -14,7 +14,7 @@ $(function () {
 				if (data.success) {
 					var origin = window.location.origin || (window.location.protocol + '//' + window.location.host)
 					$('.layui-upload-button').before('<div class="uploaded">' +
-						'<img class="good-image" src="/assets/web/' + data.data.src + '">' +
+						'<img class="good-image" src="/files/web/' + data.data.src + '">' +
 						'<i class="icon delete" data-src="' + data.data.src + '" onclick="deleteImage(this);">&#xe6a2;</i>' +
 						'</div>')
 					num++

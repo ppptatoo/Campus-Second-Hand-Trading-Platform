@@ -76,7 +76,7 @@
                 <td>${item.good.name}</td>
                 <td align="left">
                     <c:forEach var="image" items="${item.images}">
-                        <img src="<%=basePath%>assets/web/${image.imgUrl}" alt="${item.good.name}" width="56" height="56">
+                        <img src="<%=basePath%>files/web/${image.imgUrl}" alt="${item.good.name}" width="56" height="56">
                     </c:forEach>
                 </td>
                 <td >${item.address.recvDistrict}${item.address.recvAddr}</td>

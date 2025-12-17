@@ -10,9 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/detail")
@@ -48,16 +49,28 @@ public class GoodsController {
         }
 
 
-        //五件闲置物品的集合
+        //推荐闲置物品的集合
         List<Goods> commendGoods = new ArrayList<Goods>();
-        //找出所有 闲置的id
-        List<Goods> list = goodsService.selectPrimaryKey();
+        //找出所有在售（status=1）的闲置商品
+        List<Goods> list = goodsService.selectGoodsByStatusOrderByPolishTime((byte)1);
 
-        for(int i=0;i<=5;i++){
+        // 推荐数量：取实际商品数和6的最小值
+        int recommendCount = Math.min(list.size(), 6);
+        
+        // 使用Set避免推荐重复商品
+        Set<Integer> selectedIndexes = new HashSet<>();
+        while(commendGoods.size() < recommendCount && selectedIndexes.size() < list.size()){
             Integer num = random.nextInt(list.size());
-            Goods good = goodsService.selectByPrimaryKey(list.get(num).getId());
-            commendGoods.add(good);
+            if(!selectedIndexes.contains(num)){
+                selectedIndexes.add(num);
+                Goods good = list.get(num);
+                // 再次确认商品状态为在售且不是当前商品
+                if(good.getStatus() == 1 && !good.getId().equals(id)){
+                    commendGoods.add(good);
+                }
+            }
         }
+        
         List<GoodsExtend> commendExtends = new ArrayList<GoodsExtend>();
         for(Goods good:commendGoods){
             GoodsExtend commendExtend = new GoodsExtend();
