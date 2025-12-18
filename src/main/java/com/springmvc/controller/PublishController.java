@@ -39,6 +39,9 @@ public class PublishController {
     @Resource
     private ReportService reportService;
 
+    @Resource
+    private CommentsService commentsService;
+
     /**
      * 处理进入发布界面
      * @param session
@@ -250,6 +253,76 @@ public class PublishController {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("success",true);
         map.put("msg","举报成功");
+        return map;
+    }
+
+    /**
+     * 提交评论
+     * @param session
+     * @param gid 商品 ID
+     * @param content 评论内容
+     * @return
+     */
+    @RequestMapping(value = "/comment/add", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> addComment(HttpSession session, @RequestParam("gid") Integer gid, @RequestParam("content") String content) {
+        User user = (User) session.getAttribute("cur_user");
+        Map<String, Object> map = new HashMap<>();
+
+        if (user == null) {
+            map.put("success", false);
+            map.put("msg", "请先登录");
+            return map;
+        }
+
+        if (content == null || content.trim().isEmpty() || content.length() > 100) {
+            map.put("success", false);
+            map.put("msg", "评论内容不能为空且不超过 100 字");
+            return map;
+        }
+
+        Comments comment = new Comments();
+        comment.setUserId(user.getId());
+        comment.setGoodsId(gid);
+        comment.setContent(content);
+        comment.setCreateAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        commentsService.insert(comment);
+
+        map.put("success", true);
+        map.put("msg", "评论成功");
+        map.put("data", comment);
+        return map;
+    }
+
+    /**
+     * 获取商品的评论列表（包含用户信息和回复数）
+     * @param gid 商品 ID
+     * @return
+     */
+    @RequestMapping(value = "/comment/list", method = RequestMethod.GET)
+    public @ResponseBody Map<String, Object> getComments(@RequestParam("gid") Integer gid) {
+        Map<String, Object> map = new HashMap<>();
+        List<Comments> comments = commentsService.selectByGoodsId(gid);
+
+        // 为每条评论补充用户信息
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Comments c : comments) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", c.getId());
+            item.put("userId", c.getUserId());
+            item.put("goodsId", c.getGoodsId());
+            item.put("content", c.getContent());
+            item.put("createAt", c.getCreateAt());
+
+            User author = userService.selectByPrimaryKey(c.getUserId());
+            if (author != null) {
+                item.put("username", author.getUsername());
+                item.put("userImg", author.getImgUrl());
+            }
+            result.add(item);
+        }
+
+        map.put("success", true);
+        map.put("data", result);
         return map;
     }
 

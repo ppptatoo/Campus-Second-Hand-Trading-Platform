@@ -90,6 +90,34 @@ $(function() {
             })
         })
 
+        //加载评论列表
+        function loadComments() {
+            var gid = $('.want').attr('data-id')
+            $.ajax({
+                url: '/publish/comment/list?gid=' + gid,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success && res.data) {
+                        var html = ''
+                        res.data.forEach(function(comment) {
+                            html += '<li style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 4px;">'
+                            html += '  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">'
+                            html += '    <strong>' + (comment.username || '匿名用户') + '</strong>'
+                            html += '    <span style="color: #999; font-size: 12px;">' + comment.createAt + '</span>'
+                            html += '  </div>'
+                            html += '  <p style="margin: 5px 0 10px 0; color: #333;">' + comment.content + '</p>'
+                            html += '</li>'
+                        })
+                        $('#comment-list-container').html(html || '<li style="color: #999; padding: 10px;">暂无评论</li>')
+                    }
+                }
+            })
+        }
+
+        // 页面加载时先加载评论列表
+        loadComments()
+
         //评论
         $('.comments').on('input', function(e) {
             let words_number = $('.comments').val().length
@@ -111,16 +139,22 @@ $(function() {
                 return layer.msg('评论内容不得超过100字！')
             }
 
-            let url = '/user/comment'
-                // debugger
+            if (comment.content.trim().length === 0) {
+                return layer.msg('评论内容不能为空！')
+            }
+
+            let url = '/publish/comment/add'
             Common.ajax(url, comment, function(data) {
                 if (data.success) {
-                    setTimeout(function() {
-                        location.reload()
-                    }, 2500)
+                    layer.msg(data.msg)
+                    $('.comments').val('')
+                    $('.comments-words').html('0/100')
+                    loadComments()  // 刷新评论列表
+                } else {
+                    layer.msg(data.msg)
                 }
-                layer.msg(data.msg)
             }, function(err) {
+                layer.msg('提交失败，请重试')
                 console.log(err)
             }, function() {}, true, 'POST')
         })

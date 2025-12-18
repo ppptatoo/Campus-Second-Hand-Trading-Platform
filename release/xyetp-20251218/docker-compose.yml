@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: xyetp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: startech
+      MYSQL_DATABASE: market
+      TZ: Asia/Shanghai
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pstartech"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    image: tomcat:9.0-jdk11-temurin
+    container_name: xyetp-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+      - ./uploads:/data/uploads

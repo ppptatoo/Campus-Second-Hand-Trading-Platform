@@ -157,8 +157,8 @@
                     <div class="description-title"><span> 闲置留言</span></div>
                     <div class="description-body">
                         <div class="comment-list">
-                            <ul>
-
+                            <ul id="comment-list-container">
+                                <!-- 评论列表动态加载 -->
                             </ul>
                         </div>
                         <!--已登陆-->

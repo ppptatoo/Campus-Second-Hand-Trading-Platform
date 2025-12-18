@@ -14,6 +14,9 @@
 	margin-right: 11px;
 	background-color: #fff;
 	margin-bottom: 15px;
+	min-height: 310px;
+	display: flex;
+	flex-direction: column;
 }
 .list-body li:hover{
 	border: #2563eb solid 1px;
@@ -21,8 +24,17 @@
 	box-shadow: #2563eb 0px 1px 5px;
 }
 
-.good-image{}
-.good-image img{ width: 209.5px; height: 209.5px; }
+.good-image{
+	overflow: hidden;
+	background-color: #f5f5f5;
+	flex-shrink: 0;
+}
+.good-image img{ 
+	width: 209.5px; 
+	height: 209.5px;
+	object-fit: cover;
+	display: block;
+}
 .good-title{ 
 	display: block; 
 	color: #333; 
@@ -30,7 +42,8 @@
 	line-height: 28px; 
 	padding: 0 5px; 
 	overflow: hidden; 
-	height: 25px;
+	height: 56px;
+	flex-grow: 1;
 }
 .good-title:hover{ color: #f40; }
 .good-price{ 
@@ -38,6 +51,7 @@
 	font-weight: bold; 
 	padding-left: 5px; 
 	line-height: 25px;
+	padding-bottom: 5px;
 }
 .quan{
 	float: right;
