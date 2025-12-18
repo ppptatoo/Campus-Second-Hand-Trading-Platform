@@ -42,6 +42,9 @@ public class PublishController {
     @Resource
     private CommentsService commentsService;
 
+    @Resource
+    private ReplyService replyService;
+
     /**
      * 处理进入发布界面
      * @param session
@@ -294,7 +297,7 @@ public class PublishController {
     }
 
     /**
-     * 获取商品的评论列表（包含用户信息和回复数）
+     * 获取商品的评论列表（包含用户信息和回复）
      * @param gid 商品 ID
      * @return
      */
@@ -303,7 +306,7 @@ public class PublishController {
         Map<String, Object> map = new HashMap<>();
         List<Comments> comments = commentsService.selectByGoodsId(gid);
 
-        // 为每条评论补充用户信息
+        // 为每条评论补充用户信息和回复列表
         List<Map<String, Object>> result = new ArrayList<>();
         for (Comments c : comments) {
             Map<String, Object> item = new HashMap<>();
@@ -318,11 +321,76 @@ public class PublishController {
                 item.put("username", author.getUsername());
                 item.put("userImg", author.getImgUrl());
             }
+
+            // 获取该评论的所有回复
+            List<Reply> replies = replyService.selectByCommentId(c.getId());
+            List<Map<String, Object>> replyList = new ArrayList<>();
+            for (Reply r : replies) {
+                Map<String, Object> replyItem = new HashMap<>();
+                replyItem.put("id", r.getId());
+                replyItem.put("content", r.getContent());
+                replyItem.put("createAt", r.getCreateAt());
+
+                User replyUser = userService.selectByPrimaryKey(r.getUserId());
+                if (replyUser != null) {
+                    replyItem.put("username", replyUser.getUsername());
+                }
+
+                User atUser = userService.selectByPrimaryKey(r.getAtuserId());
+                if (atUser != null) {
+                    replyItem.put("atUsername", atUser.getUsername());
+                }
+
+                replyList.add(replyItem);
+            }
+            item.put("replies", replyList);
+
             result.add(item);
         }
 
         map.put("success", true);
         map.put("data", result);
+        return map;
+    }
+
+    /**
+     * 提交回复
+     * @param session
+     * @param commentId 评论 ID
+     * @param atUserId 被回复的用户 ID
+     * @param content 回复内容
+     * @return
+     */
+    @RequestMapping(value = "/reply/add", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> addReply(HttpSession session,
+                                                       @RequestParam("commentId") Integer commentId,
+                                                       @RequestParam("atUserId") Integer atUserId,
+                                                       @RequestParam("content") String content) {
+        User user = (User) session.getAttribute("cur_user");
+        Map<String, Object> map = new HashMap<>();
+
+        if (user == null) {
+            map.put("success", false);
+            map.put("msg", "请先登录");
+            return map;
+        }
+
+        if (content == null || content.trim().isEmpty() || content.length() > 100) {
+            map.put("success", false);
+            map.put("msg", "回复内容不能为空且不超过 100 字");
+            return map;
+        }
+
+        Reply reply = new Reply();
+        reply.setUserId(user.getId());
+        reply.setAtuserId(atUserId);
+        reply.setCommetId(commentId);
+        reply.setContent(content);
+        reply.setCreateAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        replyService.insert(reply);
+
+        map.put("success", true);
+        map.put("msg", "回复成功");
         return map;
     }
 

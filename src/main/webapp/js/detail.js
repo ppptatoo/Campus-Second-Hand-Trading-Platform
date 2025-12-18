@@ -101,15 +101,78 @@ $(function() {
                     if (res.success && res.data) {
                         var html = ''
                         res.data.forEach(function(comment) {
-                            html += '<li style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 4px;">'
-                            html += '  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">'
-                            html += '    <strong>' + (comment.username || '匿名用户') + '</strong>'
+                            html += '<li class="comment-item" data-id="' + comment.id + '" style="margin-bottom: 20px; padding: 12px; border: 1px solid #eee; border-radius: 6px; background: #fafafa;">'
+                            html += '  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">'
+                            html += '    <strong style="color: #333;">' + (comment.username || '匿名用户') + '</strong>'
                             html += '    <span style="color: #999; font-size: 12px;">' + comment.createAt + '</span>'
                             html += '  </div>'
-                            html += '  <p style="margin: 5px 0 10px 0; color: #333;">' + comment.content + '</p>'
+                            html += '  <p style="margin: 8px 0; color: #333; line-height: 1.6;">' + comment.content + '</p>'
+                            
+                            // 回复列表
+                            if (comment.replies && comment.replies.length > 0) {
+                                html += '  <div class="reply-list" style="margin: 10px 0 0 20px; padding: 8px; background: #fff; border-left: 3px solid #2563eb; border-radius: 4px;">'
+                                comment.replies.forEach(function(reply) {
+                                    html += '    <div style="margin-bottom: 8px; font-size: 13px; color: #555;">'
+                                    html += '      <strong>' + (reply.username || '匿名') + '</strong> 回复 '
+                                    html += '      <strong>' + (reply.atUsername || '楼主') + '</strong>: '
+                                    html += '      <span style="color: #333;">' + reply.content + '</span>'
+                                    html += '      <span style="color: #999; font-size: 11px; margin-left: 8px;">' + reply.createAt + '</span>'
+                                    html += '    </div>'
+                                })
+                                html += '  </div>'
+                            }
+                            
+                            // 回复按钮
+                            html += '  <div style="margin-top: 10px; text-align: right;">'
+                            html += '    <a href="javascript:;" class="reply-btn" data-comment-id="' + comment.id + '" data-user-id="' + comment.userId + '" data-username="' + (comment.username || '匿名用户') + '" style="color: #2563eb; font-size: 13px; text-decoration: none;">回复</a>'
+                            html += '  </div>'
                             html += '</li>'
                         })
                         $('#comment-list-container').html(html || '<li style="color: #999; padding: 10px;">暂无评论</li>')
+                        
+                        // 绑定回复按钮事件
+                        $('.reply-btn').off('click').on('click', function() {
+                            var commentId = $(this).data('comment-id')
+                            var atUserId = $(this).data('user-id')
+                            var atUsername = $(this).data('username')
+                            
+                            layer.prompt({
+                                title: '回复 ' + atUsername,
+                                formType: 2,
+                                maxlength: 100,
+                                area: ['400px', '150px']
+                            }, function(value, index, elem) {
+                                if (!value || value.trim().length === 0) {
+                                    return layer.msg('回复内容不能为空')
+                                }
+                                if (value.length > 100) {
+                                    return layer.msg('回复内容不能超过100字')
+                                }
+                                
+                                $.ajax({
+                                    url: '/publish/reply/add',
+                                    type: 'POST',
+                                    data: {
+                                        commentId: commentId,
+                                        atUserId: atUserId,
+                                        content: value
+                                    },
+                                    dataType: 'json',
+                                    success: function(res) {
+                                        if (res.success) {
+                                            layer.msg(res.msg)
+                                            layer.close(index)
+                                            loadComments()  // 刷新评论列表
+                                        } else {
+                                            layer.msg(res.msg)
+                                        }
+                                    },
+                                    error: function() {
+                                        layer.msg('回复失败，请重试')
+                                    }
+                                })
+                            })
+                        })
                     }
                 }
             })

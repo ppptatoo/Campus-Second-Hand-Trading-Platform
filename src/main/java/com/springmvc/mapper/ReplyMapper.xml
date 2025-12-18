@@ -70,4 +70,11 @@
     select id, user_id, atuser_id, commet_id, create_at, content
     from reply
   </select>
+  
+  <select id="selectByCommentId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, user_id, atuser_id, commet_id, create_at, content
+    from reply
+    where commet_id = #{commentId,jdbcType=INTEGER}
+    order by create_at asc
+  </select>
 </mapper>

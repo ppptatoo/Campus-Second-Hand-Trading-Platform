@@ -43,4 +43,9 @@ public interface ReplyMapper {
      * @mbggenerated
      */
     int updateByPrimaryKey(Reply record);
+    
+    /**
+     * 根据评论ID查询所有回复
+     */
+    List<Reply> selectByCommentId(Integer commentId);
 }
